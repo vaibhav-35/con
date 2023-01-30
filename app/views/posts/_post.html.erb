@@ -1,0 +1,54 @@
+
+<div class="instagram-card">
+    <div class="instagram-card-header">
+      <%= image_tag(post.user.avatar, class:"instagram-card-user-image") %>
+      <a class="instagram-card-user-name" href= <%= post.user %> >
+        <%= post.user.username %>
+      </a>
+      <div class="instagram-card-time">
+        <%= time_ago_in_words(post.created_at)  %>
+      </div>
+    </div>
+  
+    <div class="intagram-card-image">
+      <% post.images.each do |image| %>
+        <%= image_tag(image, style: "width:100%;") %>
+      <% end %>    
+  </div>
+  
+    <div class="instagram-card-content">
+      <p class="likes">
+        <% if user_signed_in? %>
+          <% like = current_user.likes.find_by(post: post) %>
+          <% if like.nil? %>
+            <%= button_to "like", likes_path, params: { like: { post_id: post.id }}, method: :post%>
+          <% else %>
+            <%= button_to "Unlike", like_path(like), method: :delete %>
+          <% end %>
+        <% end %>
+        <%= post.likes.count %> Likes</p>
+      <p>
+        <a class="instagram-card-content-user" href=<%= post.user %> >
+          <%= post.user.username %>
+        </a>
+        <strong> <%= post.title %></strong>
+        <br>
+        <%= post.description %>
+       </p>
+
+      <% @comment = post.comments.build %>
+
+      <p class="comments"> <%= post.comments.count %>  comments</p>
+     
+      <%= render "comments/form", comment: @comment%>
+
+        <% post.comments.each do |comment|%>
+        
+          <%= comment.text%>
+          <br>
+        <% end %>
+    <hr>
+    </div>
+  </div>
+
+  <br>
